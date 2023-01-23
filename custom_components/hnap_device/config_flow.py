@@ -79,6 +79,8 @@ async def validate_input(hass: HomeAssistant, data: dict[str, Any]) -> dict[str,
         platforms.append(PLATFORM_CAMERA)
     if isinstance(device, hnap.Motion):
         platforms.append(PLATFORM_BINARY_SENSOR)
+    if isinstance(device, hnap.Moisture):
+        platforms.append(PLATFORM_BINARY_SENSOR)
     if isinstance(device, hnap.Siren):
         platforms.append(PLATFORM_SIREN)
 

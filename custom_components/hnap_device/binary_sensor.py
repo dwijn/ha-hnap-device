@@ -24,6 +24,7 @@ from typing import Optional
 import requests.exceptions
 from homeassistant.components.binary_sensor import (
     DEVICE_CLASS_MOTION,
+    DEVICE_CLASS_MOISTURE,
     BinarySensorEntity,
 )
 from homeassistant.config_entries import ConfigEntry
@@ -57,6 +58,25 @@ class HNAPMotion(HNapEntity, BinarySensorEntity):
             self.hnap_update_success()
 
 
+class HNAPMoisture(HNapEntity, BinarySensorEntity):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self._attr_device_class = DEVICE_CLASS_MOISTURE
+
+    def update(self):
+        try:
+            self._attr_is_on = self.device.is_active()
+
+        except requests.exceptions.ConnectionError as e:
+            _LOGGER.error(e)
+            self._attr_is_on = None
+            self.hnap_update_failure()
+
+        else:
+            self.hnap_update_success()
+
+
 async def async_setup_entry(
     hass: HomeAssistant,
     config_entry: ConfigEntry,
@@ -72,7 +92,12 @@ async def async_setup_entry(
                 unique_id=config_entry.entry_id,
                 device_info=device_info,
                 device=device,
+            ),
+            HNAPMoisture(
+                unique_id=config_entry.entry_id,
+                device_info=device_info,
+                device=device,
             )
-        ],
+         ],
         update_before_add=True,
     )

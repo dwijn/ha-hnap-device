@@ -44,6 +44,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     m = {
         "binary_sensor": hnap.Motion,
+        "binary_sensor": hnap.Moisture,
         "camera": hnap.Camera,
         "siren": hnap.Siren,
     }
